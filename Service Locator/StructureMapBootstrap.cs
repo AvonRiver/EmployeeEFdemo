@@ -4,6 +4,7 @@ using Stephen.Webb.HR.Domain;
 using Stephen.Webb.HR.EventLogger;
 using Stephen.Webb.HR.Repository;
 using StructureMap;
+using StructureMap.Configuration.DSL;
 
 namespace Stephen.Webb.HR.ServiceLocator
 {
@@ -11,25 +12,19 @@ namespace Stephen.Webb.HR.ServiceLocator
     {
         public static void Initialise()
         {
-            ObjectFactory.Initialize(x =>
-            {
-                x.ForRequestedType<IHRApplication>()
-                    .TheDefault.Is.OfConcreteType<HRApplication>();
+            ObjectFactory.Initialize(x => x.AddRegistry(new ApplicationRegistry()));
+        }
+    }
 
-                x.ForRequestedType<IEmployeeManagement>()
-                    .TheDefault.Is.OfConcreteType<EmployeeManagement>();
-
-                x.ForRequestedType<DelarueSystemContext>()
-                    .TheDefault.Is.OfConcreteType<DelarueSystemContext>();
-
-                x.ForRequestedType<IEventLogger>()
-                    .TheDefault.Is.OfConcreteType<EventLogger.EventLogger>();
-             
-                x.ForRequestedType<IGenericRepository<Employee>>()
-                    .TheDefault.Is.OfConcreteType<GenericRepository<Employee>>();
-
-            });
+    public class ApplicationRegistry : Registry
+    {
+        public ApplicationRegistry()
+        {
+            For<IHRApplication>().Use<HRApplication>();
+            For<IEmployeeManagement>().Use<EmployeeManagement>();
+            For<DelarueSystemContext>().Use<DelarueSystemContext>();
+            For<IEventLogger>().Use<EventLogger.EventLogger>();
+            For<IGenericRepository<Employee>>().Use<GenericRepository<Employee>>();
         }
     }
 }
-
