@@ -45,5 +45,23 @@ namespace Unit_tests
 
             Assert.AreEqual(2, employeeExternalList.Count);
         }
+
+        [TestMethod]
+        public void None_after_date_should_return_zero()
+        {
+            var employeeRepository = MockRepository.GenerateStub<IGenericRepository<Employee>>();
+
+            var mockEmployees = new List<Employee>();
+
+            employeeRepository.Stub(x => x.Get())
+                              .IgnoreArguments()
+                              .Return(mockEmployees);
+
+            IEmployeeManagement employeeManagement = new EmployeeManagement(employeeRepository);
+
+            List<EmployeeExternal> employeeExternalList = employeeManagement.RetrieveAfterStartDate(Convert.ToDateTime("18/Dec/2020"));
+
+            Assert.AreEqual(0, employeeExternalList.Count);
+        }
     }
 }
